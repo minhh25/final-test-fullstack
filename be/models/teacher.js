@@ -17,8 +17,8 @@ const teacherSchema = new mongoose.Schema({
     },
     isActive: { type: Boolean, default: true },
     isDeleted: { type: Boolean, default: false },
-    code: { type: String, required: true, unique: true },
-    startDate: { type: Date, required: true },
+    code: { type: String,  unique: true },
+    startDate: { type: Date },
     endDate: { type: Date, required: false },
     teacherPositionId: {
         type: mongoose.Schema.Types.ObjectId,

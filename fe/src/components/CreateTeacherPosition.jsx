@@ -4,17 +4,40 @@ const CreateTeacherPosition = ({ onClose }) => {
   const [formData, setFormData] = useState({
     code: '',
     name: '',
-    description: '',
-    status: 'Hoạt động',
+    des: '',
+    isActive: true,
   });
 
-  const handleChange = (field, value) => {
-    setFormData({ ...formData, [field]: value });
+  const generateCode = (name) => {
+    return name.split(' ') .map((word) => word[0]?.toUpperCase() || '') .join('');
   };
 
-  const handleSubmit = () => {
-    // Handle form submission logic here
-    onClose();
+  const handleChange = (field, value) => {
+    const updatedFormData = { ...formData, [field]: value };
+    if (field === 'name') {
+      updatedFormData.code = generateCode(value); // Automatically generate the code based on the name
+    }
+    setFormData(updatedFormData);
+  };
+
+  const handleSubmit = async () => {
+    try {
+      const res = await fetch('http://localhost:8080/teacher-positions', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(formData),
+      });
+      const data = await res.json();
+      if (res.ok) {
+        alert('Vị trí công tác mới đã được tạo thành công!');
+        onClose();
+      } else {
+        alert(`Lỗi: ${data.message}`);
+      }
+    } catch (error) {
+      console.error('Error creating teacher position:', error);
+      alert('Đã xảy ra lỗi khi tạo vị trí công tác mới.');
+    }
   };
 
   return (
@@ -27,7 +50,7 @@ const CreateTeacherPosition = ({ onClose }) => {
             type="text"
             className="w-full border rounded px-3 py-2"
             value={formData.code}
-            onChange={(e) => handleChange('code', e.target.value)}
+            readOnly // Make the code field read-only
           />
         </div>
         <div>
@@ -43,16 +66,16 @@ const CreateTeacherPosition = ({ onClose }) => {
           <label className="block text-sm font-medium mb-1">Mô tả *</label>
           <textarea
             className="w-full border rounded px-3 py-2"
-            value={formData.description}
-            onChange={(e) => handleChange('description', e.target.value)}
+            value={formData.des}
+            onChange={(e) => handleChange('des', e.target.value)}
           />
         </div>
         <div>
           <label className="block text-sm font-medium mb-1">Trạng thái *</label>
           <select
             className="w-full border rounded px-3 py-2"
-            value={formData.status}
-            onChange={(e) => handleChange('status', e.target.value)}
+            value={formData.isActive ? 'Hoạt động' : 'Ngừng'}
+            onChange={(e) => handleChange('isActive', e.target.value === 'Hoạt động')}
           >
             <option value="Hoạt động">Hoạt động</option>
             <option value="Ngừng">Ngừng</option>

@@ -1,30 +1,31 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 
-const ListTeacher = () => {
-  const teachers = [
-    {
-      code: '1096169283',
-      name: 'Trịnh Thị Thu Hương',
-      email: 'huongtrinh@gmail.com',
-      phone: '0357016576',
-      degree: 'Bậc: Cử nhân',
-      major: 'Chuyên ngành: Quản trị nhân lực',
-      position: 'Hiệu phó, Giáo viên bộ môn',
-      address: 'Huyện Yên Mô, Tỉnh Ninh Bình',
-      status: 'Đang công tác',
-    },
-    {
-      code: '0415678462',
-      name: 'Trần Đăng Khoa',
-      email: 'khoatrnpc@gmail.com',
-      phone: '0353923603',
-      degree: 'Bậc: Tiến sĩ',
-      major: 'Chuyên ngành: Công Nghệ Thông Tin',
-      position: 'Hiệu trưởng',
-      address: 'Ninh Bình',
-      status: 'Đang công tác',
-    },
-  ];
+const ListTeacher = ({ currentPage, itemsPerPage, setTotalTeachers }) => {
+  const [listTeacher, setListTeacher] = useState([]);
+
+  useEffect(() => {
+    fetchTeachers();
+  }, []);
+
+  const fetchTeachers = async () => {
+    try {
+      const res = await fetch('http://localhost:8080/teachers');
+      const data = await res.json();
+      if (Array.isArray(data.data)) {
+        setListTeacher(data.data); // Ensure we set the array of teachers
+        setTotalTeachers(data.data.length); // Pass the total count to the parent
+        console.log('Fetched Teachers:', data.data); // Log the fetched data
+      } else {
+        console.error('Unexpected response format:', data);
+      }
+    } catch (error) {
+      console.error('Error fetching teachers:', error);
+    }
+  };
+
+  const startIndex = (currentPage - 1) * itemsPerPage;
+  const endIndex = startIndex + itemsPerPage;
+  const paginatedTeachers = listTeacher.slice(startIndex, endIndex);
 
   return (
     <div className="p-6">
@@ -42,33 +43,41 @@ const ListTeacher = () => {
           </tr>
         </thead>
         <tbody>
-          {teachers.map((teacher, index) => (
+          {paginatedTeachers.map((teacher, index) => (
             <tr key={index}>
               <td className="border border-gray-300 p-2">{teacher.code}</td>
               <td className="border border-gray-300 p-2">
                 <div className="flex items-center gap-2">
                   <img
-                    src="https://via.placeholder.com/40"
+                    src="https://img.freepik.com/free-vector/blue-circle-with-white-user_78370-4707.jpg?semt=ais_hybrid&w=740&q=80"
                     alt="Avatar"
                     className="w-10 h-10 rounded-full"
                   />
                   <div>
-                    <div>{teacher.name}</div>
-                    <div className="text-sm text-gray-500">{teacher.email}</div>
-                    <div className="text-sm text-gray-500">{teacher.phone}</div>
+                    <div className="font-bold">{teacher.userId?.name || 'N/A'}</div>
+                    <div className="text-sm text-gray-500">{teacher.userId?.email || 'N/A'}</div>
+                    <div className="text-sm text-gray-500">{teacher.userId?.phoneNumber || 'N/A'}</div>
                   </div>
                 </div>
               </td>
               <td className="border border-gray-300 p-2">
-                <div>{teacher.degree}</div>
-                <div className="text-sm text-gray-500">{teacher.major}</div>
+                {teacher.degrees.length > 0 ? (
+                  <>
+                    <div>Bậc: {teacher.degrees[0].type}</div>
+                    <div>Chuyên ngành: {teacher.degrees[0].major}</div>
+                  </>
+                ) : (
+                  'N/A'
+                )}
               </td>
               <td className="border border-gray-300 p-2">N/A</td>
-              <td className="border border-gray-300 p-2">{teacher.position}</td>
-              <td className="border border-gray-300 p-2">{teacher.address}</td>
               <td className="border border-gray-300 p-2">
-                <span className="bg-green-500 text-white px-2 py-1 rounded">
-                  {teacher.status}
+                {teacher.teacherPositionId?.name || 'N/A'}
+              </td>
+              <td className="border border-gray-300 p-2">{teacher.userId?.address || 'N/A'}</td>
+              <td className="border border-gray-300 p-2">
+                <span className={`px-2 py-1 rounded ${teacher.isActive ? 'bg-green-500 text-white' : 'bg-red-500 text-white'}`}>
+                  {teacher.isActive ? 'Đang công tác' : 'Không hoạt động'}
                 </span>
               </td>
               <td className="border border-gray-300 p-2">
