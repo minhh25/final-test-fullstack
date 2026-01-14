@@ -82,7 +82,7 @@ const TeacherPosition = () => {
               <CreateTeacherPosition
                 onClose={() => {
                   setIsCreating(false);
-                  fetchTeacherPositions(); // Refresh the list after creation
+                  fetchTeacherPositions(); 
                 }}
               />
             </div>

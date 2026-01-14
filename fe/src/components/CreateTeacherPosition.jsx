@@ -15,7 +15,7 @@ const CreateTeacherPosition = ({ onClose }) => {
   const handleChange = (field, value) => {
     const updatedFormData = { ...formData, [field]: value };
     if (field === 'name') {
-      updatedFormData.code = generateCode(value); // Automatically generate the code based on the name
+      updatedFormData.code = generateCode(value); 
     }
     setFormData(updatedFormData);
   };

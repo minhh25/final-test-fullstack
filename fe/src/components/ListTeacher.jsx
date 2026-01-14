@@ -12,9 +12,9 @@ const ListTeacher = ({ currentPage, itemsPerPage, setTotalTeachers }) => {
       const res = await fetch('http://localhost:8080/teachers');
       const data = await res.json();
       if (Array.isArray(data.data)) {
-        setListTeacher(data.data); // Ensure we set the array of teachers
-        setTotalTeachers(data.data.length); // Pass the total count to the parent
-        console.log('Fetched Teachers:', data.data); // Log the fetched data
+        setListTeacher(data.data); 
+        setTotalTeachers(data.data.length); 
+        console.log('Fetched Teachers:', data.data); 
       } else {
         console.error('Unexpected response format:', data);
       }

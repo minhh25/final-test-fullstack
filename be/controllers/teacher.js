@@ -5,8 +5,8 @@ export const getListTeachers = async (req, res) => {
   try {
     const listTeachers = await teacherModel
       .find()
-      .populate('teacherPositionId', 'name') // Populate only the 'name' field of TeacherPosition
-      .populate('userId', 'name email phoneNumber address'); // Populate fields from User
+      .populate('teacherPositionId', 'name') 
+      .populate('userId', 'name email phoneNumber address');
     res.send({
       message: "Get list teachers successfully",
       data: listTeachers,
@@ -24,8 +24,8 @@ export const getListTeachersBy10 = async (req, res) => {
       .find()
       .skip(Number(skip))
       .limit(Number(limit))
-      .populate('teacherPositionId', 'name') // Populate only the 'name' field of TeacherPosition
-      .populate('userId', 'name email phoneNumber address'); // Populate fields from User
+      .populate('teacherPositionId', 'name') 
+      .populate('userId', 'name email phoneNumber address');
     res.send({
       message: "Get list teachers by 10 successfully",
       data: listTeachers,

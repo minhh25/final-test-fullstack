@@ -6,7 +6,7 @@ const CreateTeacher = ({ onClose }) => {
     birthDate: '',
     phone: '',
     email: '',
-    cccd: '', // Identity
+    cccd: '', 
     address: '',
     teacherPositionId: '',
     startDate: '',
